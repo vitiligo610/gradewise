@@ -3,6 +3,7 @@ package com.vitiligo.gradewise.ui.components
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,24 +12,37 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.vitiligo.gradewise.model.Semester
 import com.vitiligo.gradewise.model.SemesterInfo
+import com.vitiligo.gradewise.model.toSemester
 import com.vitiligo.gradewise.ui.theme.GradeWiseTheme
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -36,6 +50,7 @@ import com.vitiligo.gradewise.ui.theme.GradeWiseTheme
 fun SemesterList(
     semesters: List<SemesterInfo>,
     onSemesterClick: (String, String) -> Unit,
+    deleteSemester: (Semester) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -51,6 +66,7 @@ fun SemesterList(
         repeat(semesters.size) {
             SemesterCard(
                 semester = semesters[it],
+                deleteSemester = { deleteSemester(semesters[it].toSemester()) },
                 modifier = Modifier
                     .clickable { onSemesterClick(semesters[it].id, semesters[it].name) }
             )
@@ -62,6 +78,7 @@ fun SemesterList(
 @Composable
 fun SemesterCard(
     semester: SemesterInfo,
+    deleteSemester: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -97,11 +114,51 @@ fun SemesterCard(
                     )
                 }
             }
-            Icon(
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = null,
+            SemesterDropdown(
+                deleteSemester = deleteSemester,
                 modifier = Modifier
-                    .size(20.dp)
+                    .align(Alignment.Top)
+            )
+        }
+    }
+}
+
+@Composable
+fun SemesterDropdown(
+    deleteSemester: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = modifier
+            .wrapContentSize()
+    ) {
+        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
+            IconButton(
+                onClick = {
+                    expanded = false
+                    deleteSemester()
+                },
+                modifier = Modifier
+                    .size(24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable { expanded = !expanded }
+                )
+            }
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                onClick = deleteSemester,
+                text = { Text("Delete Semester") },
+                leadingIcon = { Icon(Icons.Filled.Delete, null) }
             )
         }
     }
@@ -141,6 +198,7 @@ fun SemesterCardPreview() {
     GradeWiseTheme {
         SemesterCard(
             semester = SemesterInfo("a", "Fall 2023", 6, 18),
+            deleteSemester = { },
             modifier = Modifier
                 .fillMaxWidth()
         )

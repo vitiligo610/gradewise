@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vitiligo.gradewise.model.Semester
 import com.vitiligo.gradewise.ui.components.CGPACard
 import com.vitiligo.gradewise.ui.components.SemesterList
 import com.vitiligo.gradewise.ui.theme.GradeWiseTheme
@@ -87,6 +88,7 @@ fun HomeScreen(
             uiState = uiState,
             lazyListState = lazyListState,
             onSemesterClick = navigateToSemester,
+            deleteSemester = viewModel::deleteSemester,
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
@@ -99,6 +101,7 @@ fun HomeScreenBody(
     uiState: HomeUiState,
     lazyListState: LazyListState,
     onSemesterClick: (String, String) -> Unit,
+    deleteSemester: (Semester) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Log.d("HomeScreen", "Semesters Count: ${uiState.semesters.size}, list: ${uiState.semesters.toString()}")
@@ -118,6 +121,7 @@ fun HomeScreenBody(
             SemesterList(
                 semesters = uiState.semesters,
                 onSemesterClick = onSemesterClick,
+                deleteSemester = deleteSemester,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
             )

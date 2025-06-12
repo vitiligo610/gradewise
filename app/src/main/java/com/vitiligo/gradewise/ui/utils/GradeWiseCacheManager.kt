@@ -21,6 +21,10 @@ class GradeWiseCacheManager {
         stateFlow.value = semesterWithCourses
     }
 
+    fun removeCacheForSemester(semesterId: String) {
+        cachedData.remove(semesterId)
+    }
+
     fun addCourseForSemester(semesterId: String, courseToAdd: Course): Semester {
         var updatedSemester = Semester(name = "")
         cachedData[semesterId]?.let { stateFlow ->

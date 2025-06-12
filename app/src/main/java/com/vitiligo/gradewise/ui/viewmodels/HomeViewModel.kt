@@ -63,6 +63,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun deleteSemester(semester: Semester) {
+        viewModelScope.launch {
+            gradeWiseRepository.deleteSemester(semester)
+        }
+    }
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
         private const val TAG = "HomeViewModel"

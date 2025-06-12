@@ -16,6 +16,7 @@ interface GradeWiseRepository {
     fun getSemesterDetails(semesterId: String): Flow<SemesterWithCourses>
     suspend fun addSemester(semester: Semester)
     suspend fun updateSemester(semester: Semester)
+    suspend fun deleteSemester(semester: Semester)
     suspend fun addCourseForSemester(semesterId: String, course: Course)
     suspend fun updateCourseForSemester(semesterId: String, course: Course)
     suspend fun deleteCourseFromSemester(semesterId: String, course: Course)
@@ -48,6 +49,11 @@ class GradeWiseRepositoryImpl @Inject constructor(
 
     override suspend fun updateSemester(semester: Semester) {
         semesterDao.updateSemester(semester)
+    }
+
+    override suspend fun deleteSemester(semester: Semester) {
+        cacheManager.removeCacheForSemester(semester.id)
+        semesterDao.deleteSemester(semester)
     }
 
     override suspend fun addCourseForSemester(semesterId: String, course: Course) {

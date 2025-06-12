@@ -24,3 +24,11 @@ data class SemesterInfo(
     val totalCreditHours: Int,
     val sgpa: Double = 0.0,
 )
+
+fun SemesterInfo.toSemester(): Semester {
+    return Semester(
+        id = this.id,
+        name = this.name,
+        sgpa = this.sgpa,
+    )
+}
