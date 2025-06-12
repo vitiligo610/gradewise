@@ -76,7 +76,7 @@ fun HomeScreen(
                 exit = slideOutVertically(targetOffsetY = { it * 2 })
             ) {
                 FloatingActionButton(
-                    onClick = { },
+                    onClick = viewModel::addSemester,
                 ) {
                     Icon(Icons.Filled.Add, null)
                 }

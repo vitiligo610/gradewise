@@ -14,6 +14,7 @@ import javax.inject.Singleton
 interface GradeWiseRepository {
     fun getAllSemesters(): Flow<List<SemesterInfo>>
     fun getSemesterDetails(semesterId: String): Flow<SemesterWithCourses>
+    suspend fun addSemester(semester: Semester)
     suspend fun updateSemester(semester: Semester)
     suspend fun addCourseForSemester(semesterId: String, course: Course)
     suspend fun updateCourseForSemester(semesterId: String, course: Course)
@@ -38,6 +39,11 @@ class GradeWiseRepositoryImpl @Inject constructor(
                 .onEach {
                     cacheManager.setCacheForSemester(semesterId, it)
                 }
+    }
+
+    override suspend fun addSemester(semester: Semester) {
+        cacheManager.setCacheForSemester(semester.id, SemesterWithCourses(semester = semester, courses = emptyList()))
+        semesterDao.addSemester(semester)
     }
 
     override suspend fun updateSemester(semester: Semester) {

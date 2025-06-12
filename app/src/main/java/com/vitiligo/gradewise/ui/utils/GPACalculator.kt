@@ -12,7 +12,7 @@ object GPACalculator {
             creditHours += it.creditHours
         }
 
-        return sum / creditHours
+        return if (courses.isNotEmpty() && creditHours > 0) sum / creditHours else 0.0
     }
 
     fun calculateCGPA(semestersCourses: List<List<Course>>): Double {
@@ -27,6 +27,6 @@ object GPACalculator {
             }
         }
         
-        return sgpaSum / semesters
+        return if (semesters > 0) sgpaSum / semesters else 0.0
     }
 }

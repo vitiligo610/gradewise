@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vitiligo.gradewise.data.GradeWiseRepository
+import com.vitiligo.gradewise.model.Semester
 import com.vitiligo.gradewise.model.SemesterInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +34,13 @@ class HomeViewModel @Inject constructor(
             initialValue = HomeUiState()
         )
 
+    init {
+        Log.d(TAG, "Launching init")
+        viewModelScope.launch {
+            preFetchSemestersData()
+        }
+    }
+
     private suspend fun preFetchSemestersData() {
         val semesters = uiState.map { it.semesters }.first { it.isNotEmpty() }
 
@@ -44,10 +53,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    init {
-        Log.d(TAG, "Launching init")
+    fun addSemester() {
+        val semesterToAdd = Semester(
+            id = UUID.randomUUID().toString(),
+            name = "Semester # ${uiState.value.semesters.size + 1}"
+        )
         viewModelScope.launch {
-            preFetchSemestersData()
+            gradeWiseRepository.addSemester(semesterToAdd)
         }
     }
 
