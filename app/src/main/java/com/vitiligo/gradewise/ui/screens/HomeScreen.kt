@@ -44,7 +44,7 @@ import com.vitiligo.gradewise.ui.viewmodels.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navigateToSemester: (Int, String) -> Unit,
+    navigateToSemester: (String, String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -98,7 +98,7 @@ fun HomeScreen(
 fun HomeScreenBody(
     uiState: HomeUiState,
     lazyListState: LazyListState,
-    onSemesterClick: (Int, String) -> Unit,
+    onSemesterClick: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Log.d("HomeScreen", "Semesters Count: ${uiState.semesters.size}, list: ${uiState.semesters.toString()}")

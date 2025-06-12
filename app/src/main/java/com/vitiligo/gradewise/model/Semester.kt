@@ -7,14 +7,14 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "semesters", indices = [Index(value = ["id"], unique = true)])
 data class Semester(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey val id: String = "",
     val name: String,
     @ColumnInfo(defaultValue = "0.0")
     val sgpa: Double = 0.0
 )
 
 data class SemesterInfo(
-    val id: Int,
+    val id: String,
     val name: String,
     @ColumnInfo(name = "num_courses")
     val numCourses: Int,

@@ -47,7 +47,6 @@ class HomeViewModel @Inject constructor(
     init {
         Log.d(TAG, "Launching init")
         viewModelScope.launch {
-            gradeWiseRepository.setLastCourseIdInCache()
             preFetchSemestersData()
         }
     }

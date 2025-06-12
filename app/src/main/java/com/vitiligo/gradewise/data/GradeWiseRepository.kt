@@ -13,12 +13,11 @@ import javax.inject.Singleton
 
 interface GradeWiseRepository {
     fun getAllSemesters(): Flow<List<SemesterInfo>>
-    suspend fun setLastCourseIdInCache()
-    fun getSemesterDetails(semesterId: Int): Flow<SemesterWithCourses>
+    fun getSemesterDetails(semesterId: String): Flow<SemesterWithCourses>
     suspend fun updateSemester(semester: Semester)
-    suspend fun addCourseForSemester(semesterId: Int, course: Course)
-    suspend fun updateCourseForSemester(semesterId: Int, course: Course)
-    suspend fun deleteCourseFromSemester(semesterId: Int, course: Course)
+    suspend fun addCourseForSemester(semesterId: String, course: Course)
+    suspend fun updateCourseForSemester(semesterId: String, course: Course)
+    suspend fun deleteCourseFromSemester(semesterId: String, course: Course)
 }
 
 @Singleton
@@ -28,16 +27,11 @@ class GradeWiseRepositoryImpl @Inject constructor(
 ): GradeWiseRepository {
     private val cacheManager = GradeWiseCacheManager()
 
-    override suspend fun setLastCourseIdInCache() {
-        val id = courseDao.getLastCourseId()
-        cacheManager.setLastCourseId(id)
-    }
-
     override fun getAllSemesters(): Flow<List<SemesterInfo>> {
         return semesterDao.getAllSemesters()
     }
 
-    override fun getSemesterDetails(semesterId: Int): Flow<SemesterWithCourses> {
+    override fun getSemesterDetails(semesterId: String): Flow<SemesterWithCourses> {
         val cachedFlow = cacheManager.getCacheForSemester(semesterId)
         return cachedFlow?.asStateFlow()
             ?: courseDao.getSemesterWithCourses(semesterId)
@@ -50,20 +44,19 @@ class GradeWiseRepositoryImpl @Inject constructor(
         semesterDao.updateSemester(semester)
     }
 
-    override suspend fun addCourseForSemester(semesterId: Int, course: Course) {
+    override suspend fun addCourseForSemester(semesterId: String, course: Course) {
         val semester = cacheManager.addCourseForSemester(semesterId, course)
         courseDao.addCourse(course)
         semesterDao.updateSemester(semester.copy())
-
     }
 
-    override suspend fun updateCourseForSemester(semesterId: Int, course: Course) {
+    override suspend fun updateCourseForSemester(semesterId: String, course: Course) {
         val semester = cacheManager.updateCourseForSemester(semesterId, course)
         courseDao.updateCourse(course)
         semesterDao.updateSemester(semester.copy())
     }
 
-    override suspend fun deleteCourseFromSemester(semesterId: Int, course: Course) {
+    override suspend fun deleteCourseFromSemester(semesterId: String, course: Course) {
         val semester = cacheManager.deleteCourseFromSemester(semesterId, course)
         courseDao.deleteCourse(course)
         semesterDao.updateSemester(semester.copy())

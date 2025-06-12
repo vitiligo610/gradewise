@@ -8,26 +8,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.concurrent.ConcurrentHashMap
 
 class GradeWiseCacheManager {
-    private var lastCourseId: Int = 0
-    private val cachedData = ConcurrentHashMap<Int, MutableStateFlow<SemesterWithCourses>>()
+    private val cachedData = ConcurrentHashMap<String, MutableStateFlow<SemesterWithCourses>>()
 
-    fun getCacheForSemester(semesterId: Int): MutableStateFlow<SemesterWithCourses>? {
+    fun getCacheForSemester(semesterId: String): MutableStateFlow<SemesterWithCourses>? {
         return cachedData[semesterId]
     }
 
-    fun setCacheForSemester(semesterId: Int, semesterWithCourses: SemesterWithCourses) {
+    fun setCacheForSemester(semesterId: String, semesterWithCourses: SemesterWithCourses) {
         val stateFlow = cachedData.getOrPut(semesterId) {
             MutableStateFlow(semesterWithCourses)
         }
         stateFlow.value = semesterWithCourses
     }
 
-    fun setLastCourseId(id: Int) {
-        lastCourseId = id
-    }
-
-    fun addCourseForSemester(semesterId: Int, course: Course): Semester {
-        val courseToAdd = course.copy(id = ++lastCourseId)
+    fun addCourseForSemester(semesterId: String, courseToAdd: Course): Semester {
         var updatedSemester = Semester(name = "")
         cachedData[semesterId]?.let { stateFlow ->
             val updatedList = stateFlow.value.courses.toMutableList().apply {
@@ -43,7 +37,7 @@ class GradeWiseCacheManager {
         return updatedSemester
     }
 
-    fun updateCourseForSemester(semesterId: Int, updatedCourse: Course): Semester {
+    fun updateCourseForSemester(semesterId: String, updatedCourse: Course): Semester {
         var updatedSemester = Semester(name = "")
         cachedData[semesterId]?.let { stateFlow ->
             val updatedList = stateFlow.value.courses.toMutableList().apply {
@@ -62,7 +56,7 @@ class GradeWiseCacheManager {
         return updatedSemester
     }
 
-    fun deleteCourseFromSemester(semesterId: Int, courseToDelete: Course): Semester {
+    fun deleteCourseFromSemester(semesterId: String, courseToDelete: Course): Semester {
         var updatedSemester = Semester(name = "")
         cachedData[semesterId]?.let { stateFlow ->
             val updatedList = stateFlow.value.courses.filter { it.id != courseToDelete.id }

@@ -17,7 +17,7 @@ object Home
 
 @Serializable
 data class Semester(
-    val id: Int,
+    val id: String,
     val name: String
 )
 

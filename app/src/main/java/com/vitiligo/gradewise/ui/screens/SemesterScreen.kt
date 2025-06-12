@@ -65,7 +65,7 @@ import com.vitiligo.gradewise.ui.viewmodels.SemesterViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SemesterScreen(
-    semesterId: Int,
+    semesterId: String,
     semesterName: String,
     navigateBack: () -> Unit,
     viewModel: SemesterViewModel = hiltViewModel()

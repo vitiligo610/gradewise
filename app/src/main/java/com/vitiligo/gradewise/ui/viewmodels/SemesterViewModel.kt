@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,7 +23,7 @@ class SemesterViewModel @Inject constructor(
     private val gradeWiseRepository: GradeWiseRepository
 ): ViewModel() {
     private val route = savedStateHandle.toRoute<com.vitiligo.gradewise.ui.navigation.Semester>()
-    private val semesterId: Int = checkNotNull(route.id)
+    private val semesterId: String = checkNotNull(route.id)
 
     private val _uiState = MutableStateFlow(SemesterUiState(semesterName = checkNotNull(route.name)))
     val uiState: StateFlow<SemesterUiState> = _uiState.asStateFlow()
@@ -31,7 +32,7 @@ class SemesterViewModel @Inject constructor(
         loadSemester(semesterId)
     }
 
-    private fun loadSemester(semesterId: Int) {
+    private fun loadSemester(semesterId: String) {
         viewModelScope.launch {
             gradeWiseRepository.getSemesterDetails(semesterId).collect { semesterWithCourses ->
                 _uiState.update { it.copy(sgpa = semesterWithCourses.semester.sgpa, courses = semesterWithCourses.courses) }
@@ -48,6 +49,7 @@ class SemesterViewModel @Inject constructor(
 
     fun addCourseForSemester() {
         val courseToAdd = Course(
+            id = UUID.randomUUID().toString(),
             semesterId = semesterId,
             name = "Course ${_uiState.value.courses.size + 1}",
             creditHours = 3,

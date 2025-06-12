@@ -2,7 +2,6 @@ package com.vitiligo.gradewise.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -174,7 +172,7 @@ fun ProgressComponent(
 fun CourseCardPreview() {
     GradeWiseTheme {
         CourseCard(
-            course = Course(1, 1, "Course # 1", 3, Grade.A),
+            course = Course("a", "b", "Course # 1", 3, Grade.A),
             updateCourse = { },
             deleteCourse = { },
             modifier = Modifier

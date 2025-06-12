@@ -15,13 +15,10 @@ import kotlinx.coroutines.flow.Flow
 interface CourseDao {
     @Transaction
     @Query("SELECT * FROM semesters WHERE id = :semesterId")
-    fun getSemesterWithCourses(semesterId: Int): Flow<SemesterWithCourses>
+    fun getSemesterWithCourses(semesterId: String): Flow<SemesterWithCourses>
 
     @Query("SELECT * FROM courses WHERE semester_id = :semesterId")
-    fun getSemesterCourses(semesterId: Int): Flow<List<Course>>
-
-    @Query("SELECT id FROM courses ORDER BY id DESC LIMIT 1")
-    suspend fun getLastCourseId(): Int
+    fun getSemesterCourses(semesterId: String): Flow<List<Course>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addCourse(course: Course)

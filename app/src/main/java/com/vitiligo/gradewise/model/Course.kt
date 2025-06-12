@@ -15,8 +15,8 @@ import androidx.room.PrimaryKey
     )
 ], indices = [Index(value = ["semester_id"])])
 data class Course(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo(name = "semester_id") val semesterId: Int,
+    @PrimaryKey val id: String = "",
+    @ColumnInfo(name = "semester_id") val semesterId: String,
     val name: String,
     @ColumnInfo(name = "credit_hours") val creditHours: Int,
     val grade: Grade

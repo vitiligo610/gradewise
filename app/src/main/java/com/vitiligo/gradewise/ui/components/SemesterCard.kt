@@ -1,27 +1,20 @@
 package com.vitiligo.gradewise.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
-import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Numbers
-import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -32,8 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,7 +35,7 @@ import com.vitiligo.gradewise.ui.theme.GradeWiseTheme
 @Composable
 fun SemesterList(
     semesters: List<SemesterInfo>,
-    onSemesterClick: (Int, String) -> Unit,
+    onSemesterClick: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -149,7 +140,7 @@ fun IconWithLabel(
 fun SemesterCardPreview() {
     GradeWiseTheme {
         SemesterCard(
-            semester = SemesterInfo(1, "Fall 2023", 6, 18),
+            semester = SemesterInfo("a", "Fall 2023", 6, 18),
             modifier = Modifier
                 .fillMaxWidth()
         )
