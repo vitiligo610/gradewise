@@ -25,13 +25,14 @@ class HomeViewModel @Inject constructor(
         .map { semesters ->
             HomeUiState(
                 semesters = semesters,
-                cgpa = (semesters.map { it.sgpa }).average()
+                cgpa = if (semesters.isNotEmpty()) semesters.map { it.sgpa }.average() else 0.0,
+                loading = false
             )
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue = HomeUiState()
+            initialValue = HomeUiState(loading = true)
         )
 
     init {
@@ -78,4 +79,5 @@ class HomeViewModel @Inject constructor(
 data class HomeUiState(
     val semesters: List<SemesterInfo> = listOf(),
     val cgpa: Double = 0.0,
+    val loading: Boolean = false,
 )

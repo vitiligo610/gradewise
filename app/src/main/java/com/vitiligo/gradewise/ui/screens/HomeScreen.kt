@@ -13,12 +13,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -104,7 +102,10 @@ fun HomeScreenBody(
     deleteSemester: (Semester) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Log.d("HomeScreen", "Semesters Count: ${uiState.semesters.size}, list: ${uiState.semesters.toString()}")
+    Log.d(
+        "HomeScreen",
+        "Semesters Count: ${uiState.semesters.size}, list: ${uiState.semesters}"
+    )
     LazyColumn(
         state = lazyListState,
         modifier = modifier
@@ -119,6 +120,7 @@ fun HomeScreenBody(
         }
         item {
             SemesterList(
+                loading = uiState.loading,
                 semesters = uiState.semesters,
                 onSemesterClick = onSemesterClick,
                 deleteSemester = deleteSemester,
@@ -140,14 +142,14 @@ fun ScreenAppBar(
     CenterAlignedTopAppBar(
         title = { Text(title) },
         actions = {
-            IconButton(
-                onClick = onSettingsButtonClick
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = null
-                )
-            }
+//            IconButton(
+//                onClick = onSettingsButtonClick
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Filled.Settings,
+//                    contentDescription = null
+//                )
+//            }
         },
         scrollBehavior = scrollBehavior,
         modifier = modifier

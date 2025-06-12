@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vitiligo.gradewise.ui.theme.GradeWiseTheme
-import com.vitiligo.gradewise.ui.utils.Utils
+import com.vitiligo.gradewise.ui.utils.toFixed
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -109,13 +109,13 @@ fun GPACard(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = Utils.roundOffDecimal(gpa),
+                text = gpa.toFixed(2),
                 color = gpaTextColor,
                 fontSize = gpaTextSize,
                 fontWeight = gpaTextFontWeight,
             )
             Text(
-                text = "/${Utils.roundOffDecimal(outOf)}",
+                text = "/${outOf.toFixed(2)}",
                 color = outOfTextColor,
                 style = outOfTextStyle,
                 modifier = Modifier

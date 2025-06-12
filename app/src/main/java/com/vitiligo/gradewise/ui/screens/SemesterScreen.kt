@@ -57,6 +57,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.vitiligo.gradewise.model.Course
 import com.vitiligo.gradewise.ui.components.BottomOutlineTextField
 import com.vitiligo.gradewise.ui.components.CourseCard
+import com.vitiligo.gradewise.ui.components.EmptyListMessage
 import com.vitiligo.gradewise.ui.components.GPACard
 import com.vitiligo.gradewise.ui.utils.ScrollDirection
 import com.vitiligo.gradewise.ui.utils.rememberDirectionalLazyListState
@@ -164,6 +165,13 @@ fun SemesterScreenBody(
             Spacer(modifier = Modifier.height(16.dp))
         }
         item {
+            if (courses.isEmpty()) {
+                EmptyListMessage(
+                    label = "course",
+                    modifier = Modifier
+                        .padding(top = 64.dp)
+                )
+            }
             Spacer(modifier = Modifier.height(74.dp))
         }
     }

@@ -19,7 +19,7 @@ object DatabaseModule {
     ): GradeWiseDatabase {
         return Room.databaseBuilder(context, GradeWiseDatabase::class.java, "gradewise_db")
             .fallbackToDestructiveMigration(false)
-            .createFromAsset("database/gradewise.db")
+//            .createFromAsset("database/gradewise.db")
             .build()
     }
 

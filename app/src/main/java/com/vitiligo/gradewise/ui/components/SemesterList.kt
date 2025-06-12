@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -48,6 +49,7 @@ import com.vitiligo.gradewise.ui.theme.GradeWiseTheme
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SemesterList(
+    loading: Boolean,
     semesters: List<SemesterInfo>,
     onSemesterClick: (String, String) -> Unit,
     deleteSemester: (Semester) -> Unit,
@@ -63,14 +65,31 @@ fun SemesterList(
             color = MaterialTheme.colorScheme.secondary
         )
         Spacer(modifier = Modifier.height(16.dp))
-        repeat(semesters.size) {
-            SemesterCard(
-                semester = semesters[it],
-                deleteSemester = { deleteSemester(semesters[it].toSemester()) },
+        if (loading) {
+            LoadingIndicator(
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                size = 108.dp,
                 modifier = Modifier
-                    .clickable { onSemesterClick(semesters[it].id, semesters[it].name) }
+                    .fillMaxSize()
+                    .height(350.dp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+        } else {
+            repeat(semesters.size) {
+                SemesterCard(
+                    semester = semesters[it],
+                    deleteSemester = { deleteSemester(semesters[it].toSemester()) },
+                    modifier = Modifier
+                        .clickable { onSemesterClick(semesters[it].id, semesters[it].name) }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            if (semesters.isEmpty()) {
+                EmptyListMessage(
+                    label = "semester",
+                    modifier = Modifier
+                        .padding(top = 56.dp)
+                )
+            }
         }
     }
 }
@@ -138,7 +157,6 @@ fun SemesterDropdown(
             IconButton(
                 onClick = {
                     expanded = false
-                    deleteSemester()
                 },
                 modifier = Modifier
                     .size(24.dp)
@@ -156,9 +174,16 @@ fun SemesterDropdown(
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                onClick = deleteSemester,
+                onClick = {
+                    expanded = false
+                    deleteSemester()
+                },
                 text = { Text("Delete Semester") },
-                leadingIcon = { Icon(Icons.Filled.Delete, null) }
+                leadingIcon = { Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error
+                ) }
             )
         }
     }
