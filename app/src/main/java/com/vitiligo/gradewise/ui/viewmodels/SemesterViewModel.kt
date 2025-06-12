@@ -33,8 +33,8 @@ class SemesterViewModel @Inject constructor(
 
     private fun loadSemester(semesterId: Int) {
         viewModelScope.launch {
-            gradeWiseRepository.getCoursesForSemester(semesterId).collect { courses ->
-                _uiState.update { it.copy(courses = courses) }
+            gradeWiseRepository.getSemesterDetails(semesterId).collect { semesterWithCourses ->
+                _uiState.update { it.copy(sgpa = semesterWithCourses.semester.sgpa, courses = semesterWithCourses.courses) }
             }
         }
     }
@@ -87,5 +87,6 @@ class SemesterViewModel @Inject constructor(
 
 data class SemesterUiState(
     val semesterName: String,
+    val sgpa: Double = 0.0,
     var courses: List<Course> = listOf()
 )

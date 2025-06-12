@@ -1,10 +1,10 @@
 package com.vitiligo.gradewise.data
 
-import android.util.Log
 import com.vitiligo.gradewise.model.Course
 import com.vitiligo.gradewise.model.Semester
 import com.vitiligo.gradewise.model.SemesterInfo
-import com.vitiligo.gradewise.ui.utils.CourseCacheManager
+import com.vitiligo.gradewise.model.SemesterWithCourses
+import com.vitiligo.gradewise.ui.utils.GradeWiseCacheManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onEach
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 interface GradeWiseRepository {
     fun getAllSemesters(): Flow<List<SemesterInfo>>
     suspend fun setLastCourseIdInCache()
-    fun getCoursesForSemester(semesterId: Int): Flow<List<Course>>
+    fun getSemesterDetails(semesterId: Int): Flow<SemesterWithCourses>
     suspend fun updateSemester(semester: Semester)
     suspend fun addCourseForSemester(semesterId: Int, course: Course)
     suspend fun updateCourseForSemester(semesterId: Int, course: Course)
@@ -26,29 +26,24 @@ class GradeWiseRepositoryImpl @Inject constructor(
     private val semesterDao: SemesterDao,
     private val courseDao: CourseDao
 ): GradeWiseRepository {
-    private val courseCacheManager = CourseCacheManager()
+    private val cacheManager = GradeWiseCacheManager()
 
     override suspend fun setLastCourseIdInCache() {
         val id = courseDao.getLastCourseId()
-        courseCacheManager.setLastCourseId(id)
+        cacheManager.setLastCourseId(id)
     }
 
     override fun getAllSemesters(): Flow<List<SemesterInfo>> {
         return semesterDao.getAllSemesters()
     }
 
-    override fun getCoursesForSemester(semesterId: Int): Flow<List<Course>> {
-        val cachedFlow = courseCacheManager.getCourseCacheForSemester(semesterId)
-        return if (cachedFlow != null) {
-            Log.d("HomeViewModel", "Returning live cache for semester $semesterId")
-            cachedFlow.asStateFlow()
-        } else {
-            Log.d("HomeViewModel", "No cache, loading from DB")
-            courseDao.getSemesterCourses(semesterId)
-                .onEach { courses ->
-                    courseCacheManager.setCourseCacheForSemester(semesterId, courses)
+    override fun getSemesterDetails(semesterId: Int): Flow<SemesterWithCourses> {
+        val cachedFlow = cacheManager.getCacheForSemester(semesterId)
+        return cachedFlow?.asStateFlow()
+            ?: courseDao.getSemesterWithCourses(semesterId)
+                .onEach {
+                    cacheManager.setCacheForSemester(semesterId, it)
                 }
-        }
     }
 
     override suspend fun updateSemester(semester: Semester) {
@@ -56,17 +51,21 @@ class GradeWiseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addCourseForSemester(semesterId: Int, course: Course) {
-        courseCacheManager.addCourseForSemester(semesterId, course)
+        val semester = cacheManager.addCourseForSemester(semesterId, course)
         courseDao.addCourse(course)
+        semesterDao.updateSemester(semester.copy())
+
     }
 
     override suspend fun updateCourseForSemester(semesterId: Int, course: Course) {
-        courseCacheManager.updateCourseForSemester(semesterId, course)
+        val semester = cacheManager.updateCourseForSemester(semesterId, course)
         courseDao.updateCourse(course)
+        semesterDao.updateSemester(semester.copy())
     }
 
     override suspend fun deleteCourseFromSemester(semesterId: Int, course: Course) {
-        courseCacheManager.deleteCourseFromSemester(semesterId, course)
+        val semester = cacheManager.deleteCourseFromSemester(semesterId, course)
         courseDao.deleteCourse(course)
+        semesterDao.updateSemester(semester.copy())
     }
 }

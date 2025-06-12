@@ -37,6 +37,7 @@ import com.vitiligo.gradewise.ui.utils.Utils
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CGPACard(
+    cgpa: Double,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -52,7 +53,9 @@ fun CGPACard(
                 .clip(MaterialShapes.Sunny.toShape())
                 .align(BiasAlignment(1.4f, -0.7f))
         )
-        GPACard()
+        GPACard(
+            gpa = cgpa
+        )
         ExpressiveShape(
             size = 140.dp,
             color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.08f),
@@ -69,7 +72,7 @@ fun GPACard(
     modifier: Modifier = Modifier,
     label: String = "Cumulative GPA",
     labelInBox: Boolean = true,
-    gpa: Double = 3.88,
+    gpa: Double = 0.0,
     gpaTextColor: Color = MaterialTheme.colorScheme.primary,
     gpaTextSize: TextUnit = 96.sp,
     gpaTextFontWeight: FontWeight = FontWeight.Medium,
@@ -131,7 +134,9 @@ fun GPACard(
 fun CGPASectionPreview() {
     GradeWiseTheme {
         Surface {
-            CGPACard()
+            CGPACard(
+                cgpa = 3.88
+            )
         }
     }
 }

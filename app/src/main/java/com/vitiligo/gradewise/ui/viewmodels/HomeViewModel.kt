@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.vitiligo.gradewise.data.GradeWiseRepository
 import com.vitiligo.gradewise.model.SemesterInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,7 +20,12 @@ class HomeViewModel @Inject constructor(
     private val gradeWiseRepository: GradeWiseRepository
 ) : ViewModel() {
     val uiState: StateFlow<HomeUiState> = gradeWiseRepository.getAllSemesters()
-        .map { HomeUiState(semesters = it) }
+        .map { semesters ->
+            HomeUiState(
+                semesters = semesters,
+                cgpa = (semesters.map { it.sgpa }).average()
+            )
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -35,7 +38,7 @@ class HomeViewModel @Inject constructor(
         coroutineScope {
             semesters.forEach {
                 launch {
-                    gradeWiseRepository.getCoursesForSemester(it.id).first()
+                    gradeWiseRepository.getSemesterDetails(it.id).first()
                 }
             }
         }

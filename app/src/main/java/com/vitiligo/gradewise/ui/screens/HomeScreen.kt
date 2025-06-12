@@ -108,6 +108,7 @@ fun HomeScreenBody(
     ) {
         item {
             CGPACard(
+                cgpa = uiState.cgpa,
                 modifier = Modifier
                     .height(220.dp)
                     .fillMaxSize()
