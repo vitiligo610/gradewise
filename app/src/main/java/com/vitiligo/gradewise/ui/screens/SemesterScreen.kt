@@ -1,5 +1,6 @@
 package com.vitiligo.gradewise.ui.screens
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -50,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -268,6 +270,7 @@ private fun EditSemesterTitle(
     setIsEditing: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -295,10 +298,14 @@ private fun EditSemesterTitle(
         ) { editing ->
             IconButton(
                 onClick = {
-                    setIsEditing(!editing)
-                    if (!isEditing) {
+                    if (editing) {
+                        if (tempText.trim().isEmpty()) {
+                            Toast.makeText(context, "Semester name cannot be empty", Toast.LENGTH_SHORT).show()
+                            return@IconButton
+                        }
                         updateSemesterName(tempText)
                     }
+                    setIsEditing(!editing)
                 },
                 colors = IconButtonDefaults.outlinedIconButtonColors(),
                 modifier = Modifier

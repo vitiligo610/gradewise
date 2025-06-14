@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +21,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -33,6 +35,7 @@ fun BottomOutlineTextField(
     dividerColor: Color = DividerDefaults.color,
     enabled: Boolean = true,
     space: Dp = 8.dp,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
     var dividerColor1 by remember { mutableStateOf(dividerColor) }
@@ -53,6 +56,7 @@ fun BottomOutlineTextField(
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
             singleLine = true,
             maxLines = 1,
+            keyboardOptions = keyboardOptions,
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged {

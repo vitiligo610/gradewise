@@ -25,6 +25,13 @@ class GradeWiseCacheManager {
         cachedData.remove(semesterId)
     }
 
+    fun updateSemesterName(semesterId: String, name: String) {
+        cachedData[semesterId]?.let { stateFlow ->
+            val updatedSemester = stateFlow.value.semester.copy(name = name)
+            stateFlow.value = stateFlow.value.copy(semester = updatedSemester)
+        } ?: Log.d(TAG, "No cache found for semester id: $semesterId")
+    }
+
     fun addCourseForSemester(semesterId: String, courseToAdd: Course): Semester {
         var updatedSemester = Semester(name = "")
         cachedData[semesterId]?.let { stateFlow ->

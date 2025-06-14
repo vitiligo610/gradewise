@@ -43,7 +43,7 @@ class SemesterViewModel @Inject constructor(
     fun updateSemesterName(updatedName: String) {
         _uiState.update { it.copy(semesterName = updatedName) }
         viewModelScope.launch {
-            gradeWiseRepository.updateSemester(Semester(semesterId, updatedName))
+            gradeWiseRepository.updateSemesterName(semesterId, updatedName)
         }
     }
 

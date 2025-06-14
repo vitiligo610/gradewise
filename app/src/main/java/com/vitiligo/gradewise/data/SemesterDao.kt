@@ -23,6 +23,9 @@ interface SemesterDao {
     @Update
     suspend fun updateSemester(semester: Semester)
 
+    @Query("UPDATE semesters SET name = :name WHERe id = :semesterId")
+    suspend fun updateSemesterName(semesterId: String, name: String)
+
     @Delete
     suspend fun deleteSemester(semester: Semester)
 }
