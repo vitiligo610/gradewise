@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +13,25 @@ plugins {
 android {
     namespace = "com.vitiligo.gradewise"
     compileSdk = 35
+
+    signingConfigs {
+        create("release") {
+            val keystorePropertiesFile = file("../keystore.properties")
+
+            if (!keystorePropertiesFile.exists()) {
+                logger.warn("Release builds may not work: signing config not found.")
+                return@create
+            }
+
+            val keystoreProperties = Properties()
+            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
 
     defaultConfig {
         applicationId = "com.vitiligo.gradewise"
@@ -29,6 +51,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
