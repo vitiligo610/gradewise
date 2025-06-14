@@ -44,8 +44,9 @@ class GradeWiseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addSemester(semester: Semester) {
-        cacheManager.setCacheForSemester(semester.id, SemesterWithCourses(semester = semester, courses = emptyList()))
-        semesterDao.addSemester(semester)
+        val withTimestamp = semester.copy(createdAt = System.currentTimeMillis())
+        cacheManager.setCacheForSemester(semester.id, SemesterWithCourses(semester = withTimestamp, courses = emptyList()))
+        semesterDao.addSemester(withTimestamp)
     }
 
     override suspend fun updateSemester(semester: Semester) {

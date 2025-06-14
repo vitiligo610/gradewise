@@ -11,8 +11,8 @@ data class Semester(
     val name: String,
     @ColumnInfo(defaultValue = "0.0")
     val sgpa: Double = 0.0,
-    @ColumnInfo(name = "created_at", defaultValue = "CURRENT_TIMESTAMP")
-    val createdAt: String = ""
+    @ColumnInfo(name = "created_at")
+    val createdAt: Long? = null
 )
 
 data class SemesterInfo(

@@ -5,7 +5,7 @@ CREATE TABLE semesters (
     id TEXT PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
 	sgpa REAL DEFAULT 0.0 NOT NULL,
-	created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	created_at INTEGER DEFAULT (strftime('%s', 'now')) NOT NULL,
 	UNIQUE(id)
 );
 
